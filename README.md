@@ -17,11 +17,3 @@ import BarcodeManager from "react-native-datalogic-module";
 
 const result = await BarcodeManager.pressTrigger();
 ```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
