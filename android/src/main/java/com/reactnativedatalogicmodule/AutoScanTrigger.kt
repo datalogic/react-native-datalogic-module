@@ -96,8 +96,6 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun setCurrentRange(desiredRange: Int, promise: Promise) {
-    try {
 
-    }
   }
 }
