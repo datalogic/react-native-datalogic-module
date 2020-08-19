@@ -95,7 +95,31 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
   }
 
   @ReactMethod
-  fun setCurrentRange(desiredRange: Int, promise: Promise) {
+  fun setCurrentRange(rangeId: Int, promise: Promise) {
+    var successFlag = false
+    try {
+      var triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      var rangeList: List<com.datalogic.device.input.AutoScanTrigger.Range>? = null
+      for (t in triggersList) {
+        if (t is com.datalogic.device.input.AutoScanTrigger) {
+          rangeList = (t as com.datalogic.device.input.AutoScanTrigger).getSupportedRanges()
+          for(range in rangeList) {
+            if(range.getId() == rangeId) {
+              successFlag = (t as com.datalogic.device.input.AutoScanTrigger).setCurrentRange(range)
+              break
+            }
+          }
+          break
+        }
+      }
+      if(rangeList == null) {
+        //Device does not support AutoScan
+        successFlag = false
+      }
 
+    } catch(e: Exception) {
+      promise.reject(e)
+    }
+    promise.resolve(successFlag)
   }
 }

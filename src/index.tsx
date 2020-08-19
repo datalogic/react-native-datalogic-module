@@ -13,9 +13,10 @@ import { NativeModules } from 'react-native';
 
 const BarcodeManager = NativeModules.BarcodeManager;
 const AutoScanTrigger = NativeModules.AutoScanTrigger;
+const KeyboardManager = NativeModules.KeyboardManager;
 
 //export default BarcodeManager as BarcodeManagerType; //This one works
-export { BarcodeManager, AutoScanTrigger }; //This works when the import has { } around it
+export { BarcodeManager, AutoScanTrigger, KeyboardManager }; //This works when the import has { } around it
 
 //module.exports = NativeModules.BarcodeManager;
 //module.exports = NativeModules.AutoScanTrigger;
