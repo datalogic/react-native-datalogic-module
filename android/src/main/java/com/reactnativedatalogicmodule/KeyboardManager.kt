@@ -5,13 +5,22 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.bridge.ReadableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.bridge.ReadableArray
 
 import com.datalogic.device.ErrorManager
 import com.datalogic.device.DeviceException
 import com.datalogic.device.input.KeyboardManager
 import com.datalogic.device.input.Trigger
 import org.json.JSONArray
+import java.util.HashMap
+
+
+
+
+
+
 
 
 
@@ -64,8 +73,41 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
       }
       promise.resolve(successFlag)
 
-    } catch(e: Exception) {
+    } catch (e: Exception) {
       promise.reject(e)
+    }
+  }
+
+  @ReactMethod
+  fun setTriggers(arrayIn: ReadableArray, promise: Promise) {
+    try {
+      val array: ReadableNativeArray = arrayIn as ReadableNativeArray
+      var successFlag = true
+      val triggersMap: HashMap<Int, Boolean> = HashMap<Int, Boolean>()
+      if(keyboardManager == null) {
+        keyboardManager = KeyboardManager()
+      }
+
+      for(i in 0..array!!.size()) {
+        var id: Int = array!!.getMap(i)!!.getInt("id")
+        var enabled: Boolean = array!!.getMap(i)!!.getBoolean("enabled")
+        triggersMap.put(id, enabled)
+      }
+
+      val triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      for(t in triggersList) {
+        if( triggersMap.containsKey(t.getId())) {
+          val tEnabled: Boolean = triggersMap!!.get(t.getId()) ?: false
+          if(!t.setEnabled(tEnabled)) {
+            successFlag = false
+          }
+        }
+      }
+
+        promise.resolve(successFlag)
+
+    } catch (e: Exception) {
+
     }
   }
 }
