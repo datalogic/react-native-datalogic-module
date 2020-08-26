@@ -79,20 +79,24 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
   }
 
   @ReactMethod
-  fun setTriggers(arrayIn: ReadableArray, promise: Promise) {
+  fun setTriggers(array: ReadableArray, promise: Promise) {
     try {
-      val array: ReadableNativeArray = arrayIn as ReadableNativeArray
+      //val array: ReadableNativeArray = arrayIn as ReadableNativeArray
+      //HERE
       var successFlag = true
       val triggersMap: HashMap<Int, Boolean> = HashMap<Int, Boolean>()
       if(keyboardManager == null) {
         keyboardManager = KeyboardManager()
       }
 
-      for(i in 0..array!!.size()) {
+      val arraySize: Int = array!!.size()
+      for(i: Int in 0 until arraySize) {
         var id: Int = array!!.getMap(i)!!.getInt("id")
         var enabled: Boolean = array!!.getMap(i)!!.getBoolean("enabled")
         triggersMap.put(id, enabled)
       }
+      //HERE
+      //promise.resolve(true)
 
       val triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
       for(t in triggersList) {
