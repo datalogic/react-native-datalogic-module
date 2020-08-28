@@ -16,16 +16,6 @@ import com.datalogic.device.input.Trigger
 import org.json.JSONArray
 import java.util.HashMap
 
-
-
-
-
-
-
-
-
-
-
 class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
   var keyboardManager: KeyboardManager? = null
@@ -102,8 +92,9 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
       for(t in triggersList) {
         if( triggersMap.containsKey(t.getId())) {
           val tEnabled: Boolean = triggersMap!!.get(t.getId()) ?: false
-          if(!t.setEnabled(tEnabled)) {
-            successFlag = false
+          t.setEnabled(tEnabled)
+          if(t.isEnabled() != tEnabled) {
+            successFlag = false //This is changing to false for some reason?
           }
         }
       }
@@ -111,7 +102,7 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
         promise.resolve(successFlag)
 
     } catch (e: Exception) {
-
+      promise.reject(e)
     }
   }
 }
