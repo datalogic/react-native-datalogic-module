@@ -5,6 +5,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.Callback
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.modules.core.DeviceEventManagerModule
 
 import com.datalogic.decode.BarcodeManager
 import com.datalogic.decode.DecodeException
@@ -13,16 +16,25 @@ import com.datalogic.decode.ReadListener
 import com.datalogic.device.ErrorManager
 import com.datalogic.decode.BarcodeID
 
-import android.widget.TextView
+import android.util.Log
+
+
+
+
 
 class BarcodeManager(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
     private var decoder: com.datalogic.decode.BarcodeManager? = null
     private var listener: ReadListener? = null
-    private lateinit var mBarcodeText: TextView
 
     override fun getName(): String {
         return "BarcodeManager"
+    }
+
+    fun sendEvent(reactContext: ReactApplicationContext, eventName: String, params: WritableMap?) {
+      reactContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+        .emit(eventName, params)
     }
 
     // Example method
@@ -39,7 +51,7 @@ class BarcodeManager(reactContext: ReactApplicationContext) : ReactContextBaseJa
           decoder = com.datalogic.decode.BarcodeManager()
         }
         promise.resolve(decoder?.pressTrigger())
-      } catch(e: Exception) {
+      } catch (e: Exception) {
         promise.reject(e)
       }
     }
@@ -51,29 +63,57 @@ class BarcodeManager(reactContext: ReactApplicationContext) : ReactContextBaseJa
           decoder = com.datalogic.decode.BarcodeManager()
         }
         promise.resolve(decoder?.releaseTrigger())
-      } catch(e: Exception) {
+      } catch (e: Exception) {
         promise.reject(e)
       }
     }
 
     @ReactMethod
-    fun addReadListener(promise: Promise) {
+    fun addReadListener(successCallback: Callback, errorCallback: Callback) {
+      Log.d("TAG", "In addReadListener")
       try {
         if(decoder == null) {
           decoder = com.datalogic.decode.BarcodeManager()
         }
         if(listener == null) {
+          // Create an anonymous class.
           listener = ReadListener { decodeResult ->
-            //Implement the callback method
-            //Change the displayed text to the current received result
-            mBarcodeText.text = decodeResult.text
-            //Make user selection expand to select the entire barcode text
-            mBarcodeText.setSelectAllOnFocus(true)
+            try {
+              //Override so read info is put into JSON Object
+              val barcodeObject: WritableMap = WritableNativeMap()
+              barcodeObject.putString("barcodeData", decodeResult.getText())
+              barcodeObject.putString("barcodeType", decodeResult.getBarcodeID().name)
+              //Then invoke the success callback
+              successCallback.invoke(barcodeObject)
+            } catch (e: Exception) {
+              //Invoke the error callback?
+              errorCallback.invoke(e.toString())
+            }
           }
+//          listener = object : ReadListener(){
+//            //Implement the callback method
+//            //@Override
+//            override fun onRead(decodeResult: DecodeResult) {
+//              try {
+//                //Override so read info is put into JSON Object
+//                val barcodeObject: WritableMap = WritableNativeMap()
+//                barcodeObject.putString("barcodeData", decodeResult.getText())
+//                barcodeObject.putString("barcodeType", decodeResult.getBarcodeID().name)
+//                //Then invoke the success callback
+//                successCallback.invoke(barcodeObject)
+//              } catch (e: Exception) {
+//                //Invoke the error callback?
+//                errorCallback.invoke(e.toString())
+//              }
+//            }
+//          }
         }
-        promise.resolve(decoder!!.addReadListener(listener))
-        } catch(e: Exception) {
-          promise.reject(e)
+        decoder!!.addReadListener(listener)
+        //successCallback.invoke("This is a test")
+        //promise.resolve(decoder!!.addReadListener(listener))
+        } catch (e: Exception) {
+          //promise.reject(e)
+          errorCallback.invoke(e.toString())
         }
     }
 }
