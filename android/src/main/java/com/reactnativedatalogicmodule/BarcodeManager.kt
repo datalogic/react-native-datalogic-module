@@ -95,9 +95,10 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
 
           }
         }
+
       }
-      //decoder!!.addReadListener(listener)
       promise.resolve(decoder!!.addReadListener(listener))
+      //decoder!!.addReadListener(listener)
     } catch (e: Exception) {
       promise.reject(e)
     }
