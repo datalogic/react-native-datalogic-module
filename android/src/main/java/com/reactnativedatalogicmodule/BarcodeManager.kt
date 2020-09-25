@@ -26,10 +26,13 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
 
   //private var reactContext: ReactApplicationContext? = null
   private var decoder: com.datalogic.decode.BarcodeManager? = null
-  private var listener: ReadListener? = null
+  //private var listener: ReadListener? = null
 
   //I think Kotlins built in primary constructor is good enough?
   //I'm not sure if I need to super the context
+  init { //Secondary constructor for the class
+    decoder = com.datalogic.decode.BarcodeManager()
+  }
 
   override fun getName(): String {
       return "BarcodeManager"
@@ -54,7 +57,7 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
       if(decoder == null) {
         decoder = com.datalogic.decode.BarcodeManager()
       }
-      promise.resolve(decoder?.pressTrigger())
+      promise.resolve(decoder!!.pressTrigger())
     } catch (e: Exception) {
       promise.reject(e)
     }
@@ -66,7 +69,7 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
       if(decoder == null) {
         decoder = com.datalogic.decode.BarcodeManager()
       }
-      promise.resolve(decoder?.releaseTrigger())
+      promise.resolve(decoder!!.releaseTrigger())
     } catch (e: Exception) {
       promise.reject(e)
     }
@@ -77,25 +80,21 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
     try {
       if(decoder == null) {
         decoder = com.datalogic.decode.BarcodeManager()
+      }       // Create an anonymous class.
+      var listener: ReadListener = ReadListener { decodeResult ->
+      try {
+        //Override so read info is put into JSON Object
+        val barcodeObject: WritableMap = WritableNativeMap()
+        barcodeObject.putString("barcodeData", decodeResult.getText())
+        barcodeObject.putString("barcodeType", decodeResult.getBarcodeID().name)
+        //Then invoke the success callback
+        //successCallback.invoke(barcodeObject)
+
+        sendEvent(reactContext, "successCallback", barcodeObject)
+
+      } catch (e: Exception) {
+
       }
-      if(listener == null) {
-        // Create an anonymous class.
-        listener = ReadListener { decodeResult ->
-          try {
-            //Override so read info is put into JSON Object
-            val barcodeObject: WritableMap = WritableNativeMap()
-            barcodeObject.putString("barcodeData", decodeResult.getText())
-            barcodeObject.putString("barcodeType", decodeResult.getBarcodeID().name)
-            //Then invoke the success callback
-            //successCallback.invoke(barcodeObject)
-
-            sendEvent(reactContext, "successCallback", barcodeObject)
-
-          } catch (e: Exception) {
-
-          }
-        }
-
       }
       promise.resolve(decoder!!.addReadListener(listener))
       //decoder!!.addReadListener(listener)
