@@ -1,0 +1,1 @@
+The ios functions are not complete for this React Native module, as there are no Datalogic devices using ios. 
