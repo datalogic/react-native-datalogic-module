@@ -5,7 +5,7 @@ Library that exposes the Datalogic Android (Kotlin) SDK as a React Native Module
 ## Installation
 
 ```sh
-npm install react-native-datalogic-module
+npm i @datalogic/react-native-datalogic-module
 ```
 
 ## Usage
