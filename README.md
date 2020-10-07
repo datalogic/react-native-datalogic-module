@@ -12,11 +12,10 @@ npm install react-native-datalogic-module
 
 ```js
 import BarcodeManager from "react-native-datalogic-module";
+const result = await BarcodeManager.pressTrigger();
 
 # In Command Line
-yarn example android
+react-native run-android
 
-// ...
 
-const result = await BarcodeManager.pressTrigger();
 ```
