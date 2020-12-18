@@ -1,3 +1,8 @@
+/****************************************************/
+// Filename: AutoScanTrigger.kt
+// Overview: Contains the React Methods for the 
+// AutoScanTrigger class. 
+/****************************************************/
 package com.reactnativedatalogicmodule
 
 import com.facebook.react.bridge.ReactApplicationContext
@@ -5,13 +10,11 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.Callback
-
 import com.datalogic.device.ErrorManager
 import com.datalogic.device.DeviceException
 import com.datalogic.device.input.KeyboardManager
 import com.datalogic.device.input.Trigger
 import com.datalogic.device.input.AutoScanTrigger.Range
-
 import android.widget.TextView
 import org.json.JSONObject
 
@@ -21,6 +24,11 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
     return "AutoScanTrigger"
   }
 
+  /**********************************************************************	
+  * Purpose:        Determine if the auto scan feature is available on this device.
+  * Precondition:   N/A
+  * Postcondition:  Boolean is returned, with the status of the auto scan trigger.
+  ************************************************************************/
   @ReactMethod
   fun isAvailable(promise: Promise) {
     var availableFlag = false
@@ -42,7 +50,15 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
     }
   }
 
-  //retuns list of supported ranges. List will be empty if device does not support Auto Scan
+  /**********************************************************************	
+  * Purpose:        Gets the supported ranges of the auto scan feature.
+  * Precondition:   N/A
+  * Postcondition:  Returns an object of objects. Each inner object will
+  *                 have the following fields:
+  *                 { "id":number, "name":string }
+  *                 List will be null if the device does not support
+  *                 auto scan feature.
+  ************************************************************************/
   @ReactMethod
   fun getSupportedRanges(promise: Promise) {
     try {
@@ -56,21 +72,21 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
           break
         }
       }
-      //empty array of ranges
-//      if (rangeList != null) {
-//        resultJson.put("supportedRanges", new JSONArray (rangeList.toString())) //Not sure how to turn this into a JSONArray
-//      } else {
-//        resultJson.put("supportedRanges", JSONArray())
-//      }
-
-      //Think i need to return a JSONObject like the Cordova one does, since it won't know what
-      //the ranges is
       promise.resolve(rangeList)
     } catch (e: Exception) {
       promise.reject(e)
     }
   }
 
+  /**********************************************************************	
+  * Purpose:        Gets the current ranges of the device
+  * Precondition:   N/A
+  * Postcondition:  Returns an object containing the current range of the 
+  *                 device. The object will have the following fields:
+  *                 { "id":number, "name":string } 
+  *                 If the auto scan feature is not supported, the return
+  *                 value will be null.
+  ************************************************************************/
   //retuns current range. List will be empty if device does not support Auto Scan
   @ReactMethod
   fun getCurrentRange(promise: Promise) {
@@ -85,15 +101,18 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
           break
         }
       }
-
-      //Think i need to return a JSONObject like the Cordova one does, since it won't know what
-      //the ranges is
       promise.resolve(currentRange)
     } catch (e: Exception) {
       promise.reject(e)
     }
   }
 
+  /**********************************************************************	
+  * Purpose:        Set the current range of the auto scan feature.
+  * Precondition:   Is passed a number that should match one of the id
+  *                 values returned by the getSupportedRanges function.
+  * Postcondition:  Returns a boolean of the success flag.
+  ************************************************************************/
   @ReactMethod
   fun setCurrentRange(rangeId: Int, promise: Promise) {
     var successFlag = false

@@ -1,3 +1,8 @@
+/****************************************************/
+// Filename: ScannerProperties.kt
+// Overview: Contains the React Methods for the 
+// ScannerProperties class. 
+/****************************************************/
 package com.reactnativedatalogicmodule
 
 import com.facebook.react.bridge.ReactApplicationContext
@@ -8,7 +13,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.bridge.Arguments
-
 import com.datalogic.decode.BarcodeManager
 import com.datalogic.decode.DecodeException
 import com.datalogic.decode.configuration.IntentDeliveryMode
@@ -23,20 +27,26 @@ import com.datalogic.device.configuration.TextProperty
 import com.datalogic.device.configuration.PropertyGroup
 import com.datalogic.decode.configuration.ScannerProperties
 
-
-
 class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
   override fun getName(): String {
     return "ScannerProperties"
   }
 
+  /**********************************************************************	
+  * Purpose:        This function returns an object with all of the symbologies
+  *                 and their properties, that can be read and edited. 
+  * Precondition:   N/A
+  * Postcondition:  Returns an object in the form of a map. Each symbology will
+  *                 have the following fields:
+  *                 "name": {"supported": boolean, "enable": boolean }
+  ************************************************************************/
   @ReactMethod
   fun edit(promise: Promise) {
     val manager = BarcodeManager()
     val sp: ScannerProperties = ScannerProperties.edit(manager)
     //Make a map of maps, and manually put each of the classes in it
-    val cfg: WritableMap = WritableNativeMap() //WritableNativeMap vs WritableMap?
+    val cfg: WritableMap = WritableNativeMap()
     try {
       cfg.putMap("keyboardWedge", editHelper(sp.keyboardWedge.enable.get(), sp.keyboardWedge.isSupported()))
       cfg.putMap("aztec", editHelper(sp.aztec.enable.get(), sp.aztec.isSupported()))
@@ -79,6 +89,16 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
     }
   }
 
+  /**********************************************************************	
+  * Purpose:        Apply changes to one or more symbologies with the values 
+  *                 supplied the map variable.
+  * Precondition:   Needs to be a valid symbology. Symbologies should be seperated
+  *                 by commas. The passed in object needs at least one of the two
+  *                 properties. Name is a required field. 
+  *                 "name": {"supported": boolean, "enable": boolean }
+  * Postcondition:  Changes the settings on the device for the passed in
+  *                 symbologies. 
+  ************************************************************************/
   @ReactMethod
   fun store(map: ReadableMap, promise: Promise) {
     var successFlag = true
@@ -134,6 +154,11 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
     promise.resolve(successFlag)
   }
 
+  /**********************************************************************	
+  * Purpose:        A private helper function for the edit function.
+  * Precondition:   Should only be called from the edit function. 
+  * Postcondition:  Returns a WritableMap containing the passed in values. 
+  ************************************************************************/
   private fun editHelper(enable: Boolean, supported: Boolean): WritableMap {
     val returnMap: WritableMap = Arguments.createMap()
     try {
@@ -145,9 +170,14 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
     return returnMap
   }
 
+  /**********************************************************************	
+  * Purpose:        A private helper function for the store function.
+  * Precondition:   Should only be called from the store function. 
+  * Postcondition:  Sets the fields of the symbology in the device. 
+  *                 Returns a boolean with the success flag. 
+  ************************************************************************/
   private fun storeHelper(pg: PropertyGroup, en: BooleanProperty, all: ReadableMap, key: String): Boolean {
     var successFlag = true
-    //var tempMap: ReadableMap? = all.getMap(key) //Problems with this line?
     var tempMap: ReadableMap? = null
     try {
       tempMap = all.getMap(key)

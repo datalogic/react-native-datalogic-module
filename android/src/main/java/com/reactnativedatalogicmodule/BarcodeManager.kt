@@ -1,3 +1,8 @@
+/****************************************************/
+// Filename: BarcodeManager.kt
+// Overview: Contains the React Methods for the 
+// BarcodeManager class. 
+/****************************************************/
 package com.reactnativedatalogicmodule
 
 import com.facebook.react.bridge.ReactApplicationContext
@@ -8,7 +13,6 @@ import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
-
 import com.datalogic.decode.BarcodeManager
 import com.datalogic.decode.DecodeException
 import com.datalogic.decode.DecodeResult
@@ -19,17 +23,10 @@ import com.datalogic.decode.BarcodeID
 import android.util.Log
 
 
-
-
-
 class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
-  //private var reactContext: ReactApplicationContext? = null
   private var decoder: com.datalogic.decode.BarcodeManager? = null
-  //private var listener: ReadListener? = null
 
-  //I think Kotlins built in primary constructor is good enough?
-  //I'm not sure if I need to super the context
   init { //Secondary constructor for the class
     decoder = com.datalogic.decode.BarcodeManager()
   }
@@ -44,13 +41,13 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
       .emit(eventName, params)
   }
 
-  // Example method
-  // See https://facebook.github.io/react-native/docs/native-modules-android
-//    @ReactMethod
-//    fun multiply(a: Int, b: Int, promise: Promise) {
-//      promise.resolve(a * b)
-//    }
-
+  /**********************************************************************	
+  * Purpose:        Simulates a trigger button press. The method does not always
+  *                 immediately start a capture; instead it behaves like pressing 
+  *                 a physical scan button. 
+  * Precondition:   N/A
+  * Postcondition:  A trigger press is simulated. 
+  ************************************************************************/
   @ReactMethod
   fun pressTrigger(promise: Promise) {
     try {
@@ -63,6 +60,13 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
     }
   }
 
+  /**********************************************************************	
+  * Purpose:        Simulates a trigger button release. The method does not always
+  *                 immediately stop a capture; instead it behaves like releasing 
+  *                 a physical scan button. 
+  * Precondition:   N/A
+  * Postcondition:  A trigger release is simulated. 
+  ************************************************************************/
   @ReactMethod
   fun releaseTrigger(promise: Promise) {
     try {
@@ -75,6 +79,12 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
     }
   }
 
+  /**********************************************************************	
+  * Purpose:        Register to receive barcode data on each scan.
+  * Precondition:   An event must have been created with the expected
+  *                 callback. 
+  * Postcondition:  The event is connected to the BarcodeManager.
+  ************************************************************************/
   @ReactMethod
   fun addReadListener(promise: Promise) {
     try {
@@ -82,22 +92,17 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
         decoder = com.datalogic.decode.BarcodeManager()
       }       // Create an anonymous class.
       var listener: ReadListener = ReadListener { decodeResult ->
-      try {
-        //Override so read info is put into JSON Object
-        val barcodeObject: WritableMap = WritableNativeMap()
-        barcodeObject.putString("barcodeData", decodeResult.getText())
-        barcodeObject.putString("barcodeType", decodeResult.getBarcodeID().name)
-        //Then invoke the success callback
-        //successCallback.invoke(barcodeObject)
-
-        sendEvent(reactContext, "successCallback", barcodeObject)
-
-      } catch (e: Exception) {
-
-      }
+        try {
+          //Override so read info is put into JSON Object
+          val barcodeObject: WritableMap = WritableNativeMap()
+          barcodeObject.putString("barcodeData", decodeResult.getText())
+          barcodeObject.putString("barcodeType", decodeResult.getBarcodeID().name)
+          sendEvent(reactContext, "successCallback", barcodeObject)
+        } catch (e: Exception) {
+          promise.reject(e)
+        }
       }
       promise.resolve(decoder!!.addReadListener(listener))
-      //decoder!!.addReadListener(listener)
     } catch (e: Exception) {
       promise.reject(e)
     }
