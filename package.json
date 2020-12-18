@@ -1,6 +1,6 @@
 {
   "name": "@datalogic/react-native-datalogic-module",
-  "version": "0.1.0",
+  "version": "0.1.22-alpha.1",
   "description": "Library that exposes the Datalogic Android (Java) SDK as a React Native Module.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -14,20 +14,19 @@
     "ios",
     "cpp",
     "react-native-datalogic-module.podspec",
-    "!lib/typescript/example",
+    "!lib/typescript/test",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__"
   ],
   "scripts": {
-    "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepare": "bob build",
     "release": "release-it",
-    "example": "yarn --cwd example",
-    "pods": "cd example && pod-install --quiet",
-    "bootstrap": "yarn example && yarn && yarn pods"
+    "test": "yarn --cwd test",
+    "pods": "cd test && pod-install --quiet",
+    "bootstrap": "yarn test && yarn && yarn pods"
   },
   "keywords": [
     "react-native",
@@ -38,7 +37,7 @@
     "type": "git",
     "url": "https://datalogic.github.io/"
   },
-  "author": "Seth Ray <sethjray@gmail.com> (https://datalogic.github.io/)",
+  "author": "Datalogic",
   "license": "MIT",
   "bugs": {
     "url": "https://datalogic.github.io//issues"
@@ -72,7 +71,7 @@
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/example/node_modules",
+      "<rootDir>/test/node_modules",
       "<rootDir>/lib/"
     ]
   },
@@ -94,6 +93,9 @@
     },
     "npm": {
       "publish": true
+    },
+    "publishConfig": {
+      "access": "public"
     },
     "github": {
       "release": true
@@ -143,7 +145,7 @@
     ]
   },
   "directories": {
-    "example": "example",
+    "test": "test",
     "lib": "lib"
   },
   "dependencies": {

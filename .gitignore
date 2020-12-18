@@ -66,3 +66,4 @@ lib/
 yarn.lock
 CONTRIBUTING.md
 LICENSE
+.npmrc
