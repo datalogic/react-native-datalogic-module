@@ -1,8 +1,8 @@
 /****************************************************/
 // Filename: App.tsx
-// Overview: This file contains the test bench that 
+// Overview: This file contains the test bench that
 // can be run with 'yarn test android' from the main
-// project directory. 
+// project directory.
 /****************************************************/
 import * as React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
