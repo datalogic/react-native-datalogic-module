@@ -38,7 +38,13 @@ Follow the [React Native CLI Quickstart](https://reactnative.dev/docs/environmen
 
 ### Release Preparation
 
-* Increase version number in package.json
 * Run 'yarn test android' in the command line from the main project
     All tests should pass except the AutoScanTrigger (only some Datalogic devices have the functionality)
-* Push upstream to GitLab and npm will update automatically
+
+* Install and use the [np tool](https://github.com/sindresorhus/np):
+
+  ``` bash
+  npm install --global np
+  np
+  ```
+  
