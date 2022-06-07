@@ -11,7 +11,6 @@ import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import com.reactnativedatalogicmodule.TestModulePackage;
 import com.reactnativedatalogicmodule.DatalogicModulePackage;
 
 public class MainApplication extends Application implements ReactApplication {
