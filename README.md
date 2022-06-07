@@ -18,8 +18,9 @@ npm i @datalogic/react-native-datalogic-module
 
 ```js
 import { BarcodeManager } from "@datalogic/react-native-datalogic-module";
+import { NativeEventEmitter, Alert } from 'react-native';
 // ...
-useEffect(() => {
+React.useEffect(() => {
     try {
       const eventEmitter = new NativeEventEmitter(BarcodeManager);
       eventEmitter.addListener('successCallback', (map) => {
@@ -34,7 +35,7 @@ useEffect(() => {
 
 ## Developer Instructions
 
-Basic to-do's when updating and pushing to gitlab.
+Basic to-do's when updating and pushing to github.
 
 ### First Time Instructions
 
