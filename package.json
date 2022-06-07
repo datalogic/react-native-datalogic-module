@@ -1,6 +1,6 @@
 {
   "name": "@datalogic/react-native-datalogic-module",
-  "version": "2.0.0-2",
+  "version": "2.0.0",
   "description": "Library that exposes the Datalogic Android (Java) SDK as a React Native Module",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
