@@ -1,7 +1,7 @@
 /****************************************************/
 // Filename: BarcodeManager.kt
-// Overview: Contains the React Methods for the 
-// BarcodeManager class. 
+// Overview: Contains the React Methods for the
+// BarcodeManager class.
 /****************************************************/
 package com.reactnativedatalogicmodule
 
@@ -41,12 +41,23 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
       .emit(eventName, params)
   }
 
-  /**********************************************************************	
+  @ReactMethod
+  fun addListener(eventName: String) {
+    print(eventName);
+  }
+
+  @ReactMethod
+  fun removeListeners(count: Int) {
+    print(count);
+    // Remove upstream listeners, stop unnecessary background tasks
+  }
+
+  /**********************************************************************
   * Purpose:        Simulates a trigger button press. The method does not always
-  *                 immediately start a capture; instead it behaves like pressing 
-  *                 a physical scan button. 
+  *                 immediately start a capture; instead it behaves like pressing
+  *                 a physical scan button.
   * Precondition:   N/A
-  * Postcondition:  A trigger press is simulated. 
+  * Postcondition:  A trigger press is simulated.
   ************************************************************************/
   @ReactMethod
   fun pressTrigger(promise: Promise) {
@@ -60,12 +71,12 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
     }
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        Simulates a trigger button release. The method does not always
-  *                 immediately stop a capture; instead it behaves like releasing 
-  *                 a physical scan button. 
+  *                 immediately stop a capture; instead it behaves like releasing
+  *                 a physical scan button.
   * Precondition:   N/A
-  * Postcondition:  A trigger release is simulated. 
+  * Postcondition:  A trigger release is simulated.
   ************************************************************************/
   @ReactMethod
   fun releaseTrigger(promise: Promise) {
@@ -79,10 +90,10 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
     }
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        Register to receive barcode data on each scan.
   * Precondition:   An event must have been created with the expected
-  *                 callback. 
+  *                 callback.
   * Postcondition:  The event is connected to the BarcodeManager.
   ************************************************************************/
   @ReactMethod

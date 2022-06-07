@@ -1,21 +1,17 @@
 /****************************************************/
 // Filename: AutoScanTrigger.kt
-// Overview: Contains the React Methods for the 
-// AutoScanTrigger class. 
+// Overview: Contains the React Methods for the
+// AutoScanTrigger class.
 /****************************************************/
 package com.reactnativedatalogicmodule
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.Callback
 import com.datalogic.device.ErrorManager
 import com.datalogic.device.DeviceException
 import com.datalogic.device.input.KeyboardManager
 import com.datalogic.device.input.Trigger
 import com.datalogic.device.input.AutoScanTrigger.Range
 import android.widget.TextView
+import com.facebook.react.bridge.*
 import org.json.JSONObject
 
 class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -24,7 +20,7 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
     return "AutoScanTrigger"
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        Determine if the auto scan feature is available on this device.
   * Precondition:   N/A
   * Postcondition:  Boolean is returned, with the status of the auto scan trigger.
@@ -35,7 +31,7 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
     try {
       if (keyboardManager == null)
         keyboardManager = KeyboardManager()
-      val triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       for (t in triggersList) {
         if (t is com.datalogic.device.input.AutoScanTrigger) {
           availableFlag = true
@@ -50,7 +46,7 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
     }
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        Gets the supported ranges of the auto scan feature.
   * Precondition:   N/A
   * Postcondition:  Returns an object of objects. Each inner object will
@@ -62,28 +58,41 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
   @ReactMethod
   fun getSupportedRanges(promise: Promise) {
     try {
-      val triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       var rangeList: List<com.datalogic.device.input.AutoScanTrigger.Range>? = null
-      var resultJson: org.json.JSONObject? = null
 
       for (t in triggersList) {
         if (t is com.datalogic.device.input.AutoScanTrigger) {
-          rangeList = (t as com.datalogic.device.input.AutoScanTrigger).getSupportedRanges()
+          rangeList = t.supportedRanges
           break
         }
       }
-      promise.resolve(rangeList)
+
+      if(rangeList != null) {
+        val rangeObjArray = WritableNativeArray();
+        for(r in rangeList) {
+          val map = WritableNativeMap();
+          map.putInt("id", r.id);
+          map.putString("name", r.name);
+          rangeObjArray.pushMap(map);
+        }
+
+        promise.resolve(rangeObjArray)
+      } else {
+        promise.resolve(false)
+      }
+
     } catch (e: Exception) {
       promise.reject(e)
     }
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        Gets the current ranges of the device
   * Precondition:   N/A
-  * Postcondition:  Returns an object containing the current range of the 
+  * Postcondition:  Returns an object containing the current range of the
   *                 device. The object will have the following fields:
-  *                 { "id":number, "name":string } 
+  *                 { "id":number, "name":string }
   *                 If the auto scan feature is not supported, the return
   *                 value will be null.
   ************************************************************************/
@@ -91,23 +100,32 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
   @ReactMethod
   fun getCurrentRange(promise: Promise) {
     try {
-      val triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       var currentRange: com.datalogic.device.input.AutoScanTrigger.Range? = null
-      var resultJson: org.json.JSONObject? = null
 
       for (t in triggersList) {
         if (t is com.datalogic.device.input.AutoScanTrigger) {
-          currentRange = (t as com.datalogic.device.input.AutoScanTrigger).getCurrentRange()
+          currentRange = t.currentRange
           break
         }
       }
-      promise.resolve(currentRange)
+
+      if(currentRange != null) {
+        val currentRangeMap = WritableNativeMap();
+        currentRangeMap.putInt("id", currentRange.id);
+        currentRangeMap.putString("name", currentRange.name);
+
+        promise.resolve(currentRangeMap)
+      } else {
+        promise.resolve(false)
+      }
+
     } catch (e: Exception) {
       promise.reject(e)
     }
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        Set the current range of the auto scan feature.
   * Precondition:   Is passed a number that should match one of the id
   *                 values returned by the getSupportedRanges function.
@@ -117,14 +135,14 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
   fun setCurrentRange(rangeId: Int, promise: Promise) {
     var successFlag = false
     try {
-      var triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      var triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       var rangeList: List<com.datalogic.device.input.AutoScanTrigger.Range>? = null
       for (t in triggersList) {
         if (t is com.datalogic.device.input.AutoScanTrigger) {
-          rangeList = (t as com.datalogic.device.input.AutoScanTrigger).getSupportedRanges()
+          rangeList = t.supportedRanges
           for(range in rangeList) {
-            if(range.getId() == rangeId) {
-              successFlag = (t as com.datalogic.device.input.AutoScanTrigger).setCurrentRange(range)
+            if(range.id == rangeId) {
+              successFlag = t.setCurrentRange(range)
               break
             }
           }

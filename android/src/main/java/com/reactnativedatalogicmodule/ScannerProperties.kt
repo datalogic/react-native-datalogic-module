@@ -1,7 +1,7 @@
 /****************************************************/
 // Filename: ScannerProperties.kt
-// Overview: Contains the React Methods for the 
-// ScannerProperties class. 
+// Overview: Contains the React Methods for the
+// ScannerProperties class.
 /****************************************************/
 package com.reactnativedatalogicmodule
 
@@ -33,9 +33,9 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
     return "ScannerProperties"
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        This function returns an object with all of the symbologies
-  *                 and their properties, that can be read and edited. 
+  *                 and their properties, that can be read and edited.
   * Precondition:   N/A
   * Postcondition:  Returns an object in the form of a map. Each symbology will
   *                 have the following fields:
@@ -89,15 +89,15 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
     }
   }
 
-  /**********************************************************************	
-  * Purpose:        Apply changes to one or more symbologies with the values 
+  /**********************************************************************
+  * Purpose:        Apply changes to one or more symbologies with the values
   *                 supplied the map variable.
   * Precondition:   Needs to be a valid symbology. Symbologies should be seperated
   *                 by commas. The passed in object needs at least one of the two
-  *                 properties. Name is a required field. 
+  *                 properties. Name is a required field.
   *                 "name": {"supported": boolean, "enable": boolean }
   * Postcondition:  Changes the settings on the device for the passed in
-  *                 symbologies. 
+  *                 symbologies.
   ************************************************************************/
   @ReactMethod
   fun store(map: ReadableMap, promise: Promise) {
@@ -105,7 +105,7 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
 
     val manager = BarcodeManager()
     val cfg: ScannerProperties = ScannerProperties.edit(manager)
-    var all: ReadableMap? = null
+    var all: ReadableMap?
     try {
       all = map
 
@@ -154,10 +154,10 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
     promise.resolve(successFlag)
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        A private helper function for the edit function.
-  * Precondition:   Should only be called from the edit function. 
-  * Postcondition:  Returns a WritableMap containing the passed in values. 
+  * Precondition:   Should only be called from the edit function.
+  * Postcondition:  Returns a WritableMap containing the passed in values.
   ************************************************************************/
   private fun editHelper(enable: Boolean, supported: Boolean): WritableMap {
     val returnMap: WritableMap = Arguments.createMap()
@@ -170,15 +170,15 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
     return returnMap
   }
 
-  /**********************************************************************	
+  /**********************************************************************
   * Purpose:        A private helper function for the store function.
-  * Precondition:   Should only be called from the store function. 
-  * Postcondition:  Sets the fields of the symbology in the device. 
-  *                 Returns a boolean with the success flag. 
+  * Precondition:   Should only be called from the store function.
+  * Postcondition:  Sets the fields of the symbology in the device.
+  *                 Returns a boolean with the success flag.
   ************************************************************************/
   private fun storeHelper(pg: PropertyGroup, en: BooleanProperty, all: ReadableMap, key: String): Boolean {
     var successFlag = true
-    var tempMap: ReadableMap? = null
+    var tempMap: ReadableMap?
     try {
       tempMap = all.getMap(key)
     } catch(e: Exception) {
