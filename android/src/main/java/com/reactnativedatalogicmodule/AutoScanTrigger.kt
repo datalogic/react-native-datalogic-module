@@ -15,7 +15,13 @@ import com.facebook.react.bridge.*
 import org.json.JSONObject
 
 class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-  var keyboardManager: KeyboardManager? = null
+
+  private var keyboardManager: KeyboardManager? = null
+
+  init{
+    keyboardManager = KeyboardManager()
+  }
+
   override fun getName(): String {
     return "AutoScanTrigger"
   }
@@ -29,8 +35,6 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
   fun isAvailable(promise: Promise) {
     var availableFlag = false
     try {
-      if (keyboardManager == null)
-        keyboardManager = KeyboardManager()
       val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       for (t in triggersList) {
         if (t is com.datalogic.device.input.AutoScanTrigger) {
