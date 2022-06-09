@@ -5,14 +5,10 @@
 /****************************************************/
 package com.reactnativedatalogicmodule
 
-import com.datalogic.device.ErrorManager
-import com.datalogic.device.DeviceException
 import com.datalogic.device.input.KeyboardManager
 import com.datalogic.device.input.Trigger
 import com.datalogic.device.input.AutoScanTrigger.Range
-import android.widget.TextView
 import com.facebook.react.bridge.*
-import org.json.JSONObject
 
 class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
@@ -63,7 +59,7 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
   fun getSupportedRanges(promise: Promise) {
     try {
       val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
-      var rangeList: List<com.datalogic.device.input.AutoScanTrigger.Range>? = null
+      var rangeList: List<Range>? = null
 
       for (t in triggersList) {
         if (t is com.datalogic.device.input.AutoScanTrigger) {
@@ -105,7 +101,7 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
   fun getCurrentRange(promise: Promise) {
     try {
       val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
-      var currentRange: com.datalogic.device.input.AutoScanTrigger.Range? = null
+      var currentRange: Range? = null
 
       for (t in triggersList) {
         if (t is com.datalogic.device.input.AutoScanTrigger) {
@@ -140,7 +136,7 @@ class AutoScanTrigger(reactContext: ReactApplicationContext) : ReactContextBaseJ
     var successFlag = false
     try {
       var triggersList: List<Trigger> = keyboardManager!!.availableTriggers
-      var rangeList: List<com.datalogic.device.input.AutoScanTrigger.Range>? = null
+      var rangeList: List<Range>? = null
       for (t in triggersList) {
         if (t is com.datalogic.device.input.AutoScanTrigger) {
           rangeList = t.supportedRanges

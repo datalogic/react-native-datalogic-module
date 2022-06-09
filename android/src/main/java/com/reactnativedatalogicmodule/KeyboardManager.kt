@@ -10,19 +10,19 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.WritableNativeArray
-import com.facebook.react.bridge.ReadableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.bridge.ReadableArray
-import com.datalogic.device.ErrorManager
-import com.datalogic.device.DeviceException
 import com.datalogic.device.input.KeyboardManager
 import com.datalogic.device.input.Trigger
-import org.json.JSONArray
 import java.util.HashMap
 
 class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
-  var keyboardManager: KeyboardManager? = null
+  private var keyboardManager: KeyboardManager? = null
+
+  init{
+    keyboardManager = KeyboardManager()
+  }
 
   override fun getName(): String {
     return "KeyboardManager"
@@ -38,9 +38,6 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
   @ReactMethod
   fun getAllAvailableTriggers(promise: Promise) {
     try {
-      if(keyboardManager == null) {
-        keyboardManager = KeyboardManager()
-      }
       val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       val triggersObjArray = WritableNativeArray()
       for(t in triggersList) {
@@ -66,9 +63,6 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
   fun setAllAvailableTriggers(enable: Boolean, promise: Promise) {
     var successFlag = true
     try {
-      if(keyboardManager == null) {
-        keyboardManager = KeyboardManager()
-      }
       val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       for(t in triggersList) {
         t.isEnabled = enable
@@ -96,9 +90,6 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
     try {
       var successFlag = true
       val triggersMap: HashMap<Int, Boolean> = HashMap<Int, Boolean>()
-      if(keyboardManager == null) {
-        keyboardManager = KeyboardManager()
-      }
 
       val arraySize: Int = array.size()
       for(i: Int in 0 until arraySize) {
@@ -109,11 +100,11 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
       val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       for(t in triggersList) {
-        if( triggersMap.containsKey(t.getId())) {
-          val tEnabled: Boolean = triggersMap.get(t.getId()) ?: false
+        if( triggersMap.containsKey(t.id)) {
+          val tEnabled: Boolean = triggersMap[t.id] ?: false
           t.isEnabled = tEnabled
           if(t.isEnabled != tEnabled) {
-            successFlag = false //This is changing to false for some reason?
+            successFlag = false
           }
         }
       }

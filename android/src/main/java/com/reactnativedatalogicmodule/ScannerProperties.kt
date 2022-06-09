@@ -14,16 +14,8 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.bridge.Arguments
 import com.datalogic.decode.BarcodeManager
-import com.datalogic.decode.DecodeException
-import com.datalogic.decode.configuration.IntentDeliveryMode
-import com.datalogic.decode.configuration.IntentWedge
-import com.datalogic.device.ErrorManager
 import com.datalogic.device.configuration.BooleanProperty
-import com.datalogic.device.configuration.CharacterProperty
 import com.datalogic.device.configuration.ConfigException
-import com.datalogic.device.configuration.EnumProperty
-import com.datalogic.device.configuration.NumericProperty
-import com.datalogic.device.configuration.TextProperty
 import com.datalogic.device.configuration.PropertyGroup
 import com.datalogic.decode.configuration.ScannerProperties
 
@@ -48,38 +40,38 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
     //Make a map of maps, and manually put each of the classes in it
     val cfg: WritableMap = WritableNativeMap()
     try {
-      cfg.putMap("keyboardWedge", editHelper(sp.keyboardWedge.enable.get(), sp.keyboardWedge.isSupported()))
-      cfg.putMap("aztec", editHelper(sp.aztec.enable.get(), sp.aztec.isSupported()))
-      cfg.putMap("codabar", editHelper(sp.codabar.enable.get(), sp.codabar.isSupported()))
-      cfg.putMap("code128", editHelper(sp.code128.enable.get(), sp.code128.isSupported()))
-      cfg.putMap("code39", editHelper(sp.code39.enable.get(), sp.code39.isSupported()))
-      cfg.putMap("code93", editHelper(sp.code93.enable.get(), sp.code93.isSupported()))
-      cfg.putMap("composite", editHelper(sp.composite.enable.get(), sp.composite.isSupported()))
-      cfg.putMap("datamatrix", editHelper(sp.datamatrix.enable.get(), sp.datamatrix.isSupported()))
-      cfg.putMap("digimarc", editHelper(sp.digimarc.enable.get(), sp.digimarc.isSupported()))
-      cfg.putMap("discrete25", editHelper(sp.discrete25.enable.get(), sp.discrete25.isSupported()))
-      cfg.putMap("ean13", editHelper(sp.ean13.enable.get(), sp.ean13.isSupported()))
-      cfg.putMap("ean8", editHelper(sp.ean8.enable.get(), sp.ean8.isSupported()))
-      cfg.putMap("gs1DataBar_14", editHelper(sp.gs1DataBar_14.enable.get(), sp.gs1DataBar_14.isSupported()))
-      cfg.putMap("gs1DataBar_Expanded", editHelper(sp.gs1DataBar_Expanded.enable.get(), sp.gs1DataBar_Expanded.isSupported()))
-      cfg.putMap("gs1DataBar_Limited", editHelper(sp.gs1DataBar_Limited.enable.get(), sp.gs1DataBar_Limited.isSupported()))
-      cfg.putMap("interleaved25", editHelper(sp.interleaved25.enable.get(), sp.interleaved25.isSupported()))
-      cfg.putMap("matrix25", editHelper(sp.matrix25.enable.get(), sp.matrix25.isSupported()))
-      cfg.putMap("maxicode", editHelper(sp.maxicode.enable.get(), sp.maxicode.isSupported()))
-      cfg.putMap("microQr", editHelper(sp.microQr.enable.get(), sp.microQr.isSupported()))
-      cfg.putMap("micropdf417", editHelper(sp.micropdf417.enable.get(), sp.micropdf417.isSupported()))
-      cfg.putMap("msi", editHelper(sp.msi.enable.get(), sp.msi.isSupported()))
-      cfg.putMap("p4State", editHelper(sp.p4State.enable.get(), sp.p4State.isSupported()))
-      cfg.putMap("pAus", editHelper(sp.pAus.enable.get(), sp.pAus.isSupported()))
-      cfg.putMap("pJap", editHelper(sp.pJap.enable.get(), sp.pJap.isSupported()))
-      cfg.putMap("pKix", editHelper(sp.pKix.enable.get(), sp.pKix.isSupported()))
-      cfg.putMap("pPlanet", editHelper(sp.pPlanet.enable.get(), sp.pPlanet.isSupported()))
-      cfg.putMap("pPostnet", editHelper(sp.pPostnet.enable.get(), sp.pPostnet.isSupported()))
-      cfg.putMap("pRM", editHelper(sp.pRM.enable.get(), sp.pRM.isSupported()))
-      cfg.putMap("pdf417", editHelper(sp.pdf417.enable.get(), sp.pdf417.isSupported()))
-      cfg.putMap("qrCode", editHelper(sp.qrCode.enable.get(), sp.qrCode.isSupported()))
-      cfg.putMap("upcA", editHelper(sp.upcA.enable.get(), sp.upcA.isSupported()))
-      cfg.putMap("upcE", editHelper(sp.upcE.enable.get(), sp.upcE.isSupported()))
+      cfg.putMap("keyboardWedge", editHelper(sp.keyboardWedge.enable.get(), sp.keyboardWedge.isSupported))
+      cfg.putMap("aztec", editHelper(sp.aztec.enable.get(), sp.aztec.isSupported))
+      cfg.putMap("codabar", editHelper(sp.codabar.enable.get(), sp.codabar.isSupported))
+      cfg.putMap("code128", editHelper(sp.code128.enable.get(), sp.code128.isSupported))
+      cfg.putMap("code39", editHelper(sp.code39.enable.get(), sp.code39.isSupported))
+      cfg.putMap("code93", editHelper(sp.code93.enable.get(), sp.code93.isSupported))
+      cfg.putMap("composite", editHelper(sp.composite.enable.get(), sp.composite.isSupported))
+      cfg.putMap("datamatrix", editHelper(sp.datamatrix.enable.get(), sp.datamatrix.isSupported))
+      cfg.putMap("digimarc", editHelper(sp.digimarc.enable.get(), sp.digimarc.isSupported))
+      cfg.putMap("discrete25", editHelper(sp.discrete25.enable.get(), sp.discrete25.isSupported))
+      cfg.putMap("ean13", editHelper(sp.ean13.enable.get(), sp.ean13.isSupported))
+      cfg.putMap("ean8", editHelper(sp.ean8.enable.get(), sp.ean8.isSupported))
+      cfg.putMap("gs1DataBar_14", editHelper(sp.gs1DataBar_14.enable.get(), sp.gs1DataBar_14.isSupported))
+      cfg.putMap("gs1DataBar_Expanded", editHelper(sp.gs1DataBar_Expanded.enable.get(), sp.gs1DataBar_Expanded.isSupported))
+      cfg.putMap("gs1DataBar_Limited", editHelper(sp.gs1DataBar_Limited.enable.get(), sp.gs1DataBar_Limited.isSupported))
+      cfg.putMap("interleaved25", editHelper(sp.interleaved25.enable.get(), sp.interleaved25.isSupported))
+      cfg.putMap("matrix25", editHelper(sp.matrix25.enable.get(), sp.matrix25.isSupported))
+      cfg.putMap("maxicode", editHelper(sp.maxicode.enable.get(), sp.maxicode.isSupported))
+      cfg.putMap("microQr", editHelper(sp.microQr.enable.get(), sp.microQr.isSupported))
+      cfg.putMap("micropdf417", editHelper(sp.micropdf417.enable.get(), sp.micropdf417.isSupported))
+      cfg.putMap("msi", editHelper(sp.msi.enable.get(), sp.msi.isSupported))
+      cfg.putMap("p4State", editHelper(sp.p4State.enable.get(), sp.p4State.isSupported))
+      cfg.putMap("pAus", editHelper(sp.pAus.enable.get(), sp.pAus.isSupported))
+      cfg.putMap("pJap", editHelper(sp.pJap.enable.get(), sp.pJap.isSupported))
+      cfg.putMap("pKix", editHelper(sp.pKix.enable.get(), sp.pKix.isSupported))
+      cfg.putMap("pPlanet", editHelper(sp.pPlanet.enable.get(), sp.pPlanet.isSupported))
+      cfg.putMap("pPostnet", editHelper(sp.pPostnet.enable.get(), sp.pPostnet.isSupported))
+      cfg.putMap("pRM", editHelper(sp.pRM.enable.get(), sp.pRM.isSupported))
+      cfg.putMap("pdf417", editHelper(sp.pdf417.enable.get(), sp.pdf417.isSupported))
+      cfg.putMap("qrCode", editHelper(sp.qrCode.enable.get(), sp.qrCode.isSupported))
+      cfg.putMap("upcA", editHelper(sp.upcA.enable.get(), sp.upcA.isSupported))
+      cfg.putMap("upcE", editHelper(sp.upcE.enable.get(), sp.upcE.isSupported))
 
 
       promise.resolve(cfg)
@@ -186,7 +178,7 @@ class ScannerProperties(reactContext: ReactApplicationContext) : ReactContextBas
       tempMap = null
     }
     if(tempMap != null) {
-      if(pg.isSupported()) {
+      if(pg.isSupported) {
         en.set(tempMap.getBoolean("enable"))
       } else {
         successFlag = false

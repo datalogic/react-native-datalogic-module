@@ -14,7 +14,7 @@ import {
   KeyboardManager,
   LedManager,
   ScannerProperties,
-} from 'react-native-datalogic-module';
+} from '@datalogic/react-native-datalogic-module';
 
 export default function App() {
   React.useEffect(() => {

@@ -10,9 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
-import com.datalogic.device.ErrorManager
 import com.datalogic.device.DeviceException
-import java.util.HashMap
 import com.datalogic.device.notification.LedManager
 import com.datalogic.device.notification.Led
 
@@ -20,7 +18,11 @@ import com.datalogic.device.notification.Led
 
 class LedManager(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
-  var ledManager: LedManager? = null
+  private var ledManager: LedManager? = null
+
+  init {
+    ledManager = LedManager()
+  }
 
   override fun getName(): String {
     return "LedManager"
@@ -37,9 +39,6 @@ class LedManager(reactContext: ReactApplicationContext) : ReactContextBaseJavaMo
   fun setLed(map: ReadableMap, promise: Promise) {
     try {
       var successFlag: Boolean
-      if(ledManager == null) {
-        ledManager = LedManager()
-      }
 
       var notificationLed: Led? = null
       var enable: Boolean? = null
