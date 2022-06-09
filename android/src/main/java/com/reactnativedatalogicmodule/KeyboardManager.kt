@@ -1,7 +1,7 @@
 /****************************************************/
 // Filename: KeyboardManager.kt
-// Overview: Contains the React Methods for the 
-// KeyboardManager class. 
+// Overview: Contains the React Methods for the
+// KeyboardManager class.
 /****************************************************/
 package com.reactnativedatalogicmodule
 
@@ -10,26 +10,26 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.WritableNativeArray
-import com.facebook.react.bridge.ReadableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.bridge.ReadableArray
-import com.datalogic.device.ErrorManager
-import com.datalogic.device.DeviceException
 import com.datalogic.device.input.KeyboardManager
 import com.datalogic.device.input.Trigger
-import org.json.JSONArray
 import java.util.HashMap
 
 class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
-  var keyboardManager: KeyboardManager? = null
+  private var keyboardManager: KeyboardManager? = null
+
+  init{
+    keyboardManager = KeyboardManager()
+  }
 
   override fun getName(): String {
     return "KeyboardManager"
   }
 
-  /**********************************************************************	
-  * Purpose:        Gets all the available triggers on the device. 
+  /**********************************************************************
+  * Purpose:        Gets all the available triggers on the device.
   * Precondition:   N/A
   * Postcondition:  Returns an object of objects, with one for each trigger.
   *                 They will have the following fields:
@@ -38,16 +38,13 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
   @ReactMethod
   fun getAllAvailableTriggers(promise: Promise) {
     try {
-      if(keyboardManager == null) {
-        keyboardManager = KeyboardManager()
-      }
-      val triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       val triggersObjArray = WritableNativeArray()
       for(t in triggersList) {
         val map = WritableNativeMap()
-        map.putBoolean("enabled", t.isEnabled())
-        map.putInt("id", t.getId())
-        map.putString("name", t.getName())
+        map.putBoolean("enabled", t.isEnabled)
+        map.putInt("id", t.id)
+        map.putString("name", t.name)
         triggersObjArray.pushMap(map)
       }
 
@@ -57,22 +54,19 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
     }
   }
 
-  /**********************************************************************	
-  * Purpose:        Sets all the available triggers on the device. 
+  /**********************************************************************
+  * Purpose:        Sets all the available triggers on the device.
   * Precondition:   Is passed in a boolean
-  * Postcondition:  All available triggers are either set to true or false. 
+  * Postcondition:  All available triggers are either set to true or false.
   ************************************************************************/
   @ReactMethod
   fun setAllAvailableTriggers(enable: Boolean, promise: Promise) {
     var successFlag = true
     try {
-      if(keyboardManager == null) {
-        keyboardManager = KeyboardManager()
-      }
-      val triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       for(t in triggersList) {
-        t.setEnabled(enable)
-        if(t.isEnabled() != enable) {
+        t.isEnabled = enable
+        if(t.isEnabled != enable) {
           successFlag = false
         }
       }
@@ -83,8 +77,8 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
     }
   }
 
-  /**********************************************************************	
-  * Purpose:        Set one or more triggers on or off. 
+  /**********************************************************************
+  * Purpose:        Set one or more triggers on or off.
   * Precondition:   Is passed in a object of objects, with  each object
   *                 containing the following fields:
   *                 { enabled: boolean, id: number, name: string }
@@ -96,24 +90,21 @@ class KeyboardManager(reactContext: ReactApplicationContext) : ReactContextBaseJ
     try {
       var successFlag = true
       val triggersMap: HashMap<Int, Boolean> = HashMap<Int, Boolean>()
-      if(keyboardManager == null) {
-        keyboardManager = KeyboardManager()
-      }
 
-      val arraySize: Int = array!!.size()
+      val arraySize: Int = array.size()
       for(i: Int in 0 until arraySize) {
-        var id: Int = array!!.getMap(i)!!.getInt("id")
-        var enabled: Boolean = array!!.getMap(i)!!.getBoolean("enabled")
+        val id: Int = array.getMap(i).getInt("id")
+        val enabled: Boolean = array.getMap(i).getBoolean("enabled")
         triggersMap.put(id, enabled)
       }
 
-      val triggersList: List<Trigger> = keyboardManager!!.getAvailableTriggers()
+      val triggersList: List<Trigger> = keyboardManager!!.availableTriggers
       for(t in triggersList) {
-        if( triggersMap.containsKey(t.getId())) {
-          val tEnabled: Boolean = triggersMap!!.get(t.getId()) ?: false
-          t.setEnabled(tEnabled)
-          if(t.isEnabled() != tEnabled) {
-            successFlag = false //This is changing to false for some reason?
+        if( triggersMap.containsKey(t.id)) {
+          val tEnabled: Boolean = triggersMap[t.id] ?: false
+          t.isEnabled = tEnabled
+          if(t.isEnabled != tEnabled) {
+            successFlag = false
           }
         }
       }
