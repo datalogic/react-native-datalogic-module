@@ -22,4 +22,4 @@ Follow the [React Native CLI Quickstart](https://reactnative.dev/docs/environmen
   ``` bash
   npm install --global np
   np
-  ```
+  ``
