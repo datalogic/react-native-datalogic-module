@@ -5,6 +5,7 @@
 /****************************************************/
 package com.reactnativedatalogicmodule
 
+import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -18,10 +19,23 @@ import com.datalogic.decode.ReadListener
 
 class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
-  private var decoder: BarcodeManager? = null
+  private var barcodeManager: BarcodeManager? = null
+  private var listener: ReadListener? = null
 
   init {
-    decoder = BarcodeManager()
+    barcodeManager = BarcodeManager()
+    // Create an anonymous class.
+    listener = ReadListener { decodeResult ->
+      try {
+        //Override so read info is put into JSON Object
+        val barcodeObject: WritableMap = WritableNativeMap()
+        barcodeObject.putString("barcodeData", decodeResult.getText())
+        barcodeObject.putString("barcodeType", decodeResult.getBarcodeID().name)
+        sendEvent(reactContext, "successCallback", barcodeObject)
+      } catch (e: Exception) {
+        Log.i("Listener Exception: ", e.toString());
+      }
+    }
   }
 
   override fun getName(): String {
@@ -36,13 +50,12 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
 
   @ReactMethod
   fun addListener(eventName: String) {
-    print(eventName);
+    //Log.i("addListener: ", "is a stub function, use addReadListener()");
   }
 
   @ReactMethod
   fun removeListeners(count: Int) {
-    print(count);
-    // Remove upstream listeners, stop unnecessary background tasks
+    //Log.i("removeListeners: ",  "is a stub function, use release()");
   }
 
   /**********************************************************************
@@ -55,7 +68,7 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
   @ReactMethod
   fun pressTrigger(promise: Promise) {
     try {
-      promise.resolve(decoder!!.pressTrigger())
+      promise.resolve(barcodeManager!!.pressTrigger())
     } catch (e: Exception) {
       promise.reject(e)
     }
@@ -71,7 +84,7 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
   @ReactMethod
   fun releaseTrigger(promise: Promise) {
     try {
-      promise.resolve(decoder!!.releaseTrigger())
+      promise.resolve(barcodeManager!!.releaseTrigger())
     } catch (e: Exception) {
       promise.reject(e)
     }
@@ -86,20 +99,24 @@ class BarcodeManager(var reactContext: ReactApplicationContext) : ReactContextBa
   @ReactMethod
   fun addReadListener(promise: Promise) {
     try {
-      // Create an anonymous class.
-      var listener: ReadListener = ReadListener { decodeResult ->
-        try {
-          //Override so read info is put into JSON Object
-          val barcodeObject: WritableMap = WritableNativeMap()
-          barcodeObject.putString("barcodeData", decodeResult.getText())
-          barcodeObject.putString("barcodeType", decodeResult.getBarcodeID().name)
-          sendEvent(reactContext, "successCallback", barcodeObject)
-        } catch (e: Exception) {
-          promise.reject(e)
-        }
-      }
-      promise.resolve(decoder!!.addReadListener(listener))
+      barcodeManager!!.removeReadListener(listener)
+      promise.resolve(barcodeManager!!.addReadListener(listener))
     } catch (e: Exception) {
+      promise.reject(e)
+    }
+  }
+
+  /**********************************************************************
+   * Purpose:        Removes all listeners from the BarcodeManager class
+   * Precondition:   N/A
+   * Postcondition:  All listeners are removed.
+   ************************************************************************/
+  @ReactMethod
+  fun release(promise: Promise) {
+    try {
+      promise.resolve(barcodeManager!!.release())
+    } catch (e: Exception) {
+      Log.i("release Exception: ", e.toString());
       promise.reject(e)
     }
   }

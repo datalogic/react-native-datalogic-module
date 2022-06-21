@@ -7,6 +7,8 @@ import {
   NativeEventEmitter,
   Alert,
   Button,
+  SafeAreaView,
+  ScrollView
 } from 'react-native';
 import {
   BarcodeManager,
@@ -60,8 +62,13 @@ export default function App() {
 
     return () => {
       // unsubscribeOrRemoveEventHandler(); // 👍
+      nativeListenerReturn.remove();
+      BarcodeManager.release();
     };
   }, []);
+
+  const eventEmitter = new NativeEventEmitter(BarcodeManager);
+  let nativeListenerReturn = null;
 
   const pressTrigger = async () => {
     try {
@@ -97,10 +104,14 @@ export default function App() {
 
   const addReadListenerCall = async () => {
     try {
-      const eventEmitter = new NativeEventEmitter(BarcodeManager);
-      eventEmitter.addListener('successCallback', map => {
+      if(nativeListenerReturn != null) {
+        nativeListenerReturn.remove();
+      }
+      nativeListenerReturn = eventEmitter.addListener('successCallback', map => {
         Alert.alert(map.barcodeData);
+        console.log('Success Callback log');
       });
+      console.log(nativeListenerReturn);
       let addListenerReturn = await BarcodeManager.addReadListener();
 
       console.log('Add Read Listener: ' + addListenerReturn);
@@ -110,6 +121,16 @@ export default function App() {
       return false;
     }
   };
+
+  const removeAllListeners = async () => {
+    try {
+      nativeListenerReturn.remove();
+      let releaseListenersReturn = await BarcodeManager.release();
+      console.log('Release All Listeners: ' + JSON.stringify(releaseListenersReturn));
+    } catch(e) {
+      console.error(e);
+    }
+  }
 
   const isAvailable = async () => {
     try {
@@ -253,97 +274,105 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>BarcodeManager Tests</Text>
-      <Button
-        onPress={pressTrigger}
-        title="Press Trigger"
-        color="#841584"
-        accessibilityLabel="Try to use trigger"
-      />
-      <Button
-        onPress={releaseTrigger}
-        title="Release Trigger"
-        color="#841584"
-        accessibilityLabel="Try to use release trigger"
-      />
-      <Button
-        onPress={addReadListenerCall}
-        title="Add Read Listener"
-        color="#841584"
-        accessibilityLabel="Try to add Read Listener"
-      />
-      <Text>AutoScanTrigger Tests</Text>
-      <Button
-        onPress={isAvailable}
-        title="Is Available"
-        color="#841584"
-        accessibilityLabel="Check if AutoScanTrigger is available"
-      />
-      <Button
-        onPress={getSupportedRanges}
-        title="Get Supported Ranges"
-        color="#841584"
-        accessibilityLabel="Retrieve the supported ranges of the auto scan trigger"
-      />
-      <Button
-        onPress={getCurrentRange}
-        title="Get Current Range"
-        color="#841584"
-        accessibilityLabel="Retrieve the current range of the auto scan trigger"
-      />
-      <Button
-        onPress={setCurrentRange}
-        title="Set Current Range"
-        color="#841584"
-        accessibilityLabel="Set the current range of the auto scan trigger"
-      />
-      <Text>KeyboardManager Tests</Text>
-      <Button
-        onPress={getAllAvailableTriggers}
-        title="Get Available Triggers"
-        color="#841584"
-        accessibilityLabel="Get All Available Triggers"
-      />
-      <Button
-        onPress={setAllAvailableTriggersTrue}
-        title="Set Available Triggers True"
-        color="#841584"
-        accessibilityLabel="Set All Available Triggers"
-      />
-      <Button
-        onPress={setAllAvailableTriggersFalse}
-        title="Set Available Triggers False"
-        color="#841584"
-        accessibilityLabel="Set All Available Triggers"
-      />
-      <Button
-        onPress={setTriggers}
-        title="Set Triggers"
-        color="#841584"
-        accessibilityLabel="Set Triggers"
-      />
-      <Text>LedManager Tests</Text>
-      <Button
-        onPress={setLed}
-        title="Set Led"
-        color="#841584"
-        accessibilityLabel="Set Led"
-      />
-      <Text>ScannerProperties Tests</Text>
-      <Button
-        onPress={editScanner}
-        title="Edit Scanner"
-        color="#841584"
-        accessibilityLabel="Edit Scanner"
-      />
-      <Button
-        onPress={storeScanner}
-        title="Store Scanner"
-        color="#841584"
-        accessibilityLabel="Store Scanner"
-      />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <Text>BarcodeManager Tests</Text>
+        <Button
+          onPress={pressTrigger}
+          title="Press Trigger"
+          color="#841584"
+          accessibilityLabel="Try to use trigger"
+        />
+        <Button
+          onPress={releaseTrigger}
+          title="Release Trigger"
+          color="#841584"
+          accessibilityLabel="Try to use release trigger"
+        />
+        <Button
+          onPress={addReadListenerCall}
+          title="Add Read Listener"
+          color="#841584"
+          accessibilityLabel="Try to add Read Listener"
+        />
+        <Button
+          onPress={removeAllListeners}
+          title="Remove All Listeners"
+          color="#841584"
+          accessibilityLabel="Try to remove all Listeners"
+        />
+        <Text>AutoScanTrigger Tests</Text>
+        <Button
+          onPress={isAvailable}
+          title="Is Available"
+          color="#841584"
+          accessibilityLabel="Check if AutoScanTrigger is available"
+        />
+        <Button
+          onPress={getSupportedRanges}
+          title="Get Supported Ranges"
+          color="#841584"
+          accessibilityLabel="Retrieve the supported ranges of the auto scan trigger"
+        />
+        <Button
+          onPress={getCurrentRange}
+          title="Get Current Range"
+          color="#841584"
+          accessibilityLabel="Retrieve the current range of the auto scan trigger"
+        />
+        <Button
+          onPress={setCurrentRange}
+          title="Set Current Range"
+          color="#841584"
+          accessibilityLabel="Set the current range of the auto scan trigger"
+        />
+        <Text>KeyboardManager Tests</Text>
+        <Button
+          onPress={getAllAvailableTriggers}
+          title="Get Available Triggers"
+          color="#841584"
+          accessibilityLabel="Get All Available Triggers"
+        />
+        <Button
+          onPress={setAllAvailableTriggersTrue}
+          title="Set Available Triggers True"
+          color="#841584"
+          accessibilityLabel="Set All Available Triggers"
+        />
+        <Button
+          onPress={setAllAvailableTriggersFalse}
+          title="Set Available Triggers False"
+          color="#841584"
+          accessibilityLabel="Set All Available Triggers"
+        />
+        <Button
+          onPress={setTriggers}
+          title="Set Triggers"
+          color="#841584"
+          accessibilityLabel="Set Triggers"
+        />
+        <Text>LedManager Tests</Text>
+        <Button
+          onPress={setLed}
+          title="Set Led"
+          color="#841584"
+          accessibilityLabel="Set Led"
+        />
+        <Text>ScannerProperties Tests</Text>
+        <Button
+          onPress={editScanner}
+          title="Edit Scanner"
+          color="#841584"
+          accessibilityLabel="Edit Scanner"
+        />
+        <Button
+          onPress={storeScanner}
+          title="Store Scanner"
+          color="#841584"
+          accessibilityLabel="Store Scanner"
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -351,7 +380,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   box: {
     width: 60,
